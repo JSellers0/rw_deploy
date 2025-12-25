@@ -226,7 +226,7 @@ upstream flask_backend {
 
 server {
     listen 80;
-    server_name _;
+    server_name rockwillow.duckdns.org;
     access_log /var/log/nginx/app_access.log;
     error_log /var/log/nginx/app_error.log;
 
