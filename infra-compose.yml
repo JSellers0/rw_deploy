@@ -3,26 +3,26 @@ version: '3.8'
 networks:
   rockwillow_network:
     name: rockwillow_network
-    driver: bridge
 
 services:
+  # ==================== DATABASE ====================
   rw-mariadb:
     image: mariadb:10.11
     container_name: rw-mariadb
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - rockwillow_network
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-changeme}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME:-rockwillow}
       MYSQL_USER: ${DB_USER:-rockwillow}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-changeme}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       TZ: ${TZ:-America/New_York}
     volumes:
       - ${HOME}/data/mariadb/data:/var/lib/mysql:Z,U
-      - ${HOME}/data/mariadb/logs/:/var/log/mysql:Z,U
+      - ${HOME}/data/mariadb/logs:/var/log/mysql:Z,U
       - ${HOME}/data/backups:/backups:Z,U
-      - ${HOME}/projects/rw_deploy/db/init.sql:/docker-entrypoint-initdb.d/init.sql:z,ro
+      - ${HOME}/projects/rw_deploy/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
       - "3307:3306"
     healthcheck:
@@ -31,10 +31,11 @@ services:
       timeout: 10s
       retries: 3
 
+  # ==================== NGINX ====================
   rw-nginx:
-    image: docker.io/library/nginx:alpine
+    image: nginx:alpine
     container_name: rw-nginx
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - rockwillow_network
     ports:
@@ -42,9 +43,13 @@ services:
       - "8443:443"
     volumes:
       - ${HOME}/projects/rw_deploy/nginx/conf.d:/etc/nginx/conf.d:Z,U
-      - ${HOME}/projects/rw_deploy/nginx/ssl:/etc/nginx/ssl:z,ro
-      - ${HOME}/projects/rw_deploy/nginx/logrotate.conf:/etc/logrotate.d/nginx-custom:ro
+      - ${HOME}/projects/rw_deploy/nginx/ssl:/etc/nginx/ssl:ro
       - ${HOME}/data/nginx/html:/usr/share/nginx/html:Z,U
       - ${HOME}/data/nginx/logs:/var/log/nginx:Z,U
       - ${HOME}/data/nginx/tmp:/var/cache/nginx:Z,U
-      - ${HOME}/data/nginx/run:/var/run:Z,U
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
