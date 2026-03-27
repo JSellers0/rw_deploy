@@ -1,4 +1,4 @@
-USE DATABASE rw_budget;
+CREATE DATABASE rw_budget_dev;
 
 CREATE TABLE IF NOT EXISTS`account` (
   `accountid` int(11) NOT NULL AUTO_INCREMENT,
@@ -444,3 +444,5 @@ group by
   `vw_cashflow_base`.`flow_month`
 ;
 
+GRANT ALL PRIVILEGES ON rw_budget_dev.* TO USER `svc_rw_budget`@'%';
+FLUSH PRIVILEGES;
