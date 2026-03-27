@@ -4,11 +4,9 @@ set -e
 echo "🚀 Podman Deployment: Rock Willow Budget System"
 echo "==============================================="
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 # Check if podman-compose is available
-echo "❌ podman-compose not found. Installing via apt..."
-    
 if ! command -v podman-compose &> /dev/null; then
     echo "❌ podman-compose not found. Installing via apt..."
     
@@ -43,11 +41,10 @@ fi
 echo "📁 Setting up directories..."
 mkdir -p ${HOME}/data/{mariadb,logs/{nginx,mariadb,rw_budget_api,rw_budget},backups}
 # Podman needs correct permissions for rootless containers
-podman unshare chown -R 999:999 ${HOME}/data/mariadb 2>/dev/null || true
+podman unshare chown -R 999:mysql ${HOME}/data/mariadb 2>/dev/null || true
 podman unshare chown -R 101:101 ${HOME}/data/logs/nginx 2>/dev/null || true
 
-# Build and start with Podman
-echo "🔨 Building containers with Podman..."
+echo "🔨 Building containers with Podman (using cache)..."
 podman-compose build --pull --no-cache
 
 echo "🛑 Stopping existing containers..."
