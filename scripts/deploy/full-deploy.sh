@@ -45,7 +45,7 @@ podman unshare chown -R 999:mysql ${HOME}/data/mariadb 2>/dev/null || true
 podman unshare chown -R 101:101 ${HOME}/data/logs/nginx 2>/dev/null || true
 
 echo "🔨 Building containers with Podman (using cache)..."
-podman-compose build --pull --no-cache
+podman-compose build --pull
 
 echo "🛑 Stopping existing containers..."
 podman-compose down --remove-orphans
@@ -72,7 +72,7 @@ echo ""
 echo "🌐 Access points:"
 echo "   Nginx Proxy:    http://$(hostname -I | awk '{print $1}'):8080"
 echo "   MariaDB:        mysql://localhost:3307 (external)"
-echo "   Gin API:        http://localhost:8081/health"
+echo "   Gin API:        http://localhost:8081/v1/health"
 echo "   Flask App:      http://localhost:5000/health"
 echo ""
 echo "🔍 Podman commands:"
