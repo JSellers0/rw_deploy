@@ -38,22 +38,26 @@ services:
     build:
       context: ${HOME}/projects/rw_budget_api
       dockerfile: Dockerfile
+    container_name: rw-app-budget-api
     restart: unless-stopped
     networks:
       - rockwillow_network
-    container_name: rw-app-budget-api
-    expose:
-      - "8080"
+    ports:
+      - "${API_PORT}:${API_PORT}"
     environment:
       GIN_MODE: release
-      APP_PORT: 8080
+      API_HOST: 0.0.0.0
+      API_PORT: ${API_PORT}
       DB_HOST: rw-mariadb
       DB_PORT: 3306
       DB_USER: ${DB_USER}
-      MSQLPWD: ${DB_PASSWORD}
+      DB_PSWD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      LOG_DIR: logs
+    volumes:
+      - ${HOME}/data/logs/apps/rw_budget_api:/app/logs:Z,U
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${GIN_API_PORT}/v1/health"]
       interval: 30s
       timeout: 10s
       retries: 3
