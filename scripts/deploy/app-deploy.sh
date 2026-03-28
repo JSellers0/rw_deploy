@@ -18,7 +18,7 @@ fi
 
 # Deploy infrastructure
 echo "📦 Starting Apps..."
-podman-compose -f app-compose.yml up -d --build
+podman-compose -f app-compose.yml up -d --build 
 
 echo "⏳ Waiting for services to start..."
 sleep 10
