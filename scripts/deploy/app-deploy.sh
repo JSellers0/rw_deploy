@@ -3,7 +3,7 @@
 
 set -e
 
-echo "🚀 Deploying Rock Willow Infrastructure"
+echo "🚀 Deploying Rock Willow Applications"
 echo "======================================="
 
 cd ~/projects/rw_deploy
