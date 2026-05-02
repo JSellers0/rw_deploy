@@ -23,6 +23,9 @@ podman-compose -f app-compose.yml up -d --build
 echo "⏳ Waiting for services to start..."
 sleep 10
 
+echo "Restarting NGINX Server"
+podman restart rw-nginx
+
 echo "✅ Infrastructure deployed!"
 echo ""
 echo "🌐 Access points:"
